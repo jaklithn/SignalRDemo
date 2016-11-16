@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/toastr.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    @RenderSection("head", required: false)
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <!--<li>@Html.ActionLink("Home", "Index", "Home")</li>-->
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Chat", "Index", "Chat")</li>
+                    }
+                    <!--<li>@Html.ActionLink("Lunch", "Index", "Lunch")</li>-->
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Subscribe", "Index", "Subscribe")</li>
+                        <li>@Html.ActionLink("Progress", "Index", "Progress")</li>
+                        <li>@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
+                        <li>@Html.ActionLink("Map", "Index", "Map")</li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Broadcast", "Index", "Broadcast")</li>
+                            <li>@Html.ActionLink("Publish", "Index", "Publish")</li>
+                            <li>@Html.ActionLink("Trigger", "Index", "Trigger")</li>
+                        }
+                        <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                        <li><div>@User.Identity.Name</div></li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Login", "Index", "Account")</li>
+                    }
+                    <li><div id="divStatus"></div></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid">
+        @RenderBody()
+        <footer>
+            <hr />
+            <p>Websocket Demo by &copy; Jakob Lithner, Softhouse 2016</p>
+        </footer>
+    </div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/app.js"></script>
+
+    <!--Notification support-->
+    <script src="~/Scripts/jquery.signalR-2.2.1.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <!-- Verify setup by running: http://<yourprojecturl>/signalr/hubs and check if proxy is displayed -->
+    <script src="~/Scripts/toastr.min.js"></script>
+
+  
+    <script>
+        $(document).ready(function () {
+
+            applyMenuCss();
+
+            // Declare a function the hub can call to display messages
+            $.connection.notificationHub.client.addNotification = function (message, header, type) {
+                displayNotification(message, header, type);
+            };
+
+            // When disconnected initiate a reconnect attempt
+            $.connection.hub.disconnected(function () {
+                setTimeout(function () {
+                    console.log("Attempting a connection restart");
+                    $.connection.hub.start();
+                }, 5000);
+            });
+
+            // Display state changes in menu bar and in log
+            $.connection.hub.stateChanged(function (change) {
+                displayState(change.newState);
+            });
+
+            // Start the connection and store the returned object for global access in child views
+            window.hubConnector = $.connection.hub.start();
+
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

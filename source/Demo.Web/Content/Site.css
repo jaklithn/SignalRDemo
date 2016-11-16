@@ -1,0 +1,174 @@
+﻿/* _Layout */
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+body {
+    margin: 0;
+    padding-bottom: 20px;
+    padding-top: 0;
+}
+
+footer {
+    padding-top: 50px;
+}
+
+#menu {
+    background-color: #CCCCCC;
+}
+
+#header a {
+    color: inherit;
+}
+
+.container-fluid {
+    max-width: 1280px;
+}
+
+nav div ul li div {
+    color: #777;
+    font-weight: bold;
+    line-height: 20px;
+    margin-bottom: 13px;
+    margin-left: 15px;
+    margin-top: 13px;
+    padding: 2px 5px;
+}
+
+#toast-container > div {
+    opacity: 1;
+}
+
+/* Broadcast */
+#txtHeader {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#txtHeader {
+    margin-bottom: 10px;
+}
+#btnInfo, #btnSuccess, #btnWarning, #btnError {
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 114px;
+}
+#divButtons {
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+
+/* Chat */
+#divChat {
+    border: solid 1px gray;
+    height: 300px;
+    margin-bottom: 10px;
+    overflow: scroll;
+    width: 500px;
+}
+
+#txtMessage {
+    display: block;
+    margin-bottom: 20px;
+    width: 500px;
+}
+
+#btnSend, #btnClear {
+    margin-right: 20px;
+    width: 80px;
+}
+
+
+
+/* Lunch */
+.lunchBackground {
+    background-image: url("/Content/images/lunch.jpg");
+    height: 100%;
+    width: 100%;
+}
+
+#divLunch {
+    background-color: antiquewhite;
+    margin-top: 100px;
+    opacity: 0.8;
+    padding: 30px 30px;
+}
+
+#divLunch h1 {
+    font-size: 48pt;
+    margin: 0;
+    padding-bottom: 40px;
+    padding-top: 10px;
+}
+
+#tblLunch {
+    width: 100%;
+}
+
+#tblLunch th, #tblLunch td {
+    font-size: 24pt;
+    padding-bottom: 30px;
+    vertical-align: top;
+}
+
+#tblLunch th {
+    padding-right: 50px;
+}
+
+#MeatPrice, #FishPrice, #VegetarianPrice {
+    padding-left: 30px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#tblLunch #Extra {
+    font-style: italic;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    vertical-align: bottom;
+}
+
+
+
+/* Map */
+.maxSize {
+    height: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/* Progress */
+.progress {
+    margin-top: 30px;
+    width: 500px;
+}
+
+
+
+/* Publish */
+#SelectedMachineId {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 90px;
+}
+
+#btnOnline, #btnScreenDump {
+    display: block;
+    margin: 10px 0;
+    width: 200px;
+}
+
+
+
+/* Subscribe */
+#tblSubscribe th {
+	padding: 30px 30px 5px 0;
+}
+#tblSubscribe tr td input {
+	margin-left: 30px;
+}
+

@@ -1,0 +1,50 @@
+﻿@model Demo.Web.Models.AdminModel
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div id="divChat"></div>
+<input id="txtMessage" placeholder="Enter message"/>
+<button id="btnSend" type="submit">Send</button>
+<button id="btnClear">Clear</button>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+
+            $.connection.notificationHub.client.addChatMessage = function (name, message) {
+                displayMessage(name, message);
+            };
+
+            function sendMessage() {
+                var message = $("#txtMessage").val();
+                $.connection.notificationHub.server.sendChatMessage(message);
+                $("#txtMessage").val("");
+                $("#txtMessage").focus();
+            }
+
+            $("#btnSend").click(function() {
+                sendMessage();
+            });
+
+            $("#txtMessage").on("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    sendMessage();
+                }
+            });
+
+            $("#btnClear").click(function() {
+                $("#divChat").html("");
+                $("#txtMessage").val("");
+                $("#txtMessage").focus();
+            });
+
+            $("#txtMessage").focus();
+
+        });
+    </script>
+}

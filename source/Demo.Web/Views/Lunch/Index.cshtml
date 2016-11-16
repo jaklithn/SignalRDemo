@@ -1,0 +1,53 @@
+﻿@model Demo.Web.Models.MachinesModel
+@{
+    ViewData["Title"] = "Lunch";
+}
+
+
+<div id="divLunch">
+    <h1>Lunch menu</h1>
+    <table id="tblLunch">
+        <tr>
+            <th>Meat</th>
+            <td id="Meat"></td>
+            <td id="MeatPrice"></td>
+        </tr>
+        <tr>
+            <th>Fish</th>
+            <td id="Fish"></td>
+            <td id="FishPrice"></td>
+        </tr>
+        <tr>
+            <th>Vegetarian</th>
+            <td id="Vegetarian"></td>
+            <td id="VegetarianPrice"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2" id="Extra">Sallad, bröd, kaffe och kaka ingår i samtliga rätter</td>
+        </tr>
+    </table>
+</div>
+
+
+@section scripts {
+
+    <script>
+        $(document).ready(function() {
+
+                $("nav").hide();
+                $("footer").hide();
+                $("body").addClass("lunchBackground");
+
+                $.connection.notificationHub.client.displayLunch = function (meat, fish, vegetarian, meatPrice, fishPrice, vegetarianPrice) {
+                    $("#Meat").html(meat);
+                    $("#Fish").html(fish);
+                    $("#Vegetarian").html(vegetarian);
+                    $("#MeatPrice").html(meatPrice);
+                    $("#FishPrice").html(fishPrice);
+                    $("#VegetarianPrice").html(vegetarianPrice);
+                };
+
+            });
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Trigger";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<p>Trigger serverside notification</p>
+<button id="btnTrigger">Trigger</button>
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            $("#btnTrigger").click(function () {
+                $.ajax({url: "/Trigger/Trigger"});
+            });
+
+        });
+    </script>
+}

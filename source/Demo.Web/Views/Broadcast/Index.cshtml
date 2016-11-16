@@ -1,0 +1,32 @@
+﻿@model Demo.Web.Models.AdminModel
+@{
+    ViewData["Title"] = "Broadcast";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<input id="txtHeader" placeholder="Enter header"/>
+<input id="txtMessage" placeholder="Enter message"/>
+<div id="divButtons">
+    <button id="btnInfo">Send Info</button>
+    <button id="btnSuccess">Send Success</button>
+    <button id="btnWarning">Send Warning</button>
+    <button id="btnError">Send Error</button>
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+
+            $("button").click(function() {
+                var message = $("#txtMessage").val();
+                var header = $("#txtHeader").val();
+                var messageType = $(this).attr("id").substr(3).toLowerCase();
+                $.connection.notificationHub.server.sendNotification(message, header, messageType);
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model Demo.Web.Models.MachinesModel
+@{
+    ViewData["Title"] = "Subscribe";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<p>Set machines that you want to subscribe to</p>
+<table id="tblSubscribe">
+    <tr>
+        <th>Subscribe</th>
+        <th>Machine</th>
+        <th>ScreenDump</th>
+    </tr>
+    @foreach (var machineItem in Model.Machines)
+    {
+        <tr>
+            <td>@Html.CheckBox($"chk_{machineItem.Key.Id}", machineItem.Value)</td>
+            <td>@machineItem.Key.Name</td>
+            <td><a id="lnk_@machineItem.Key.Id" href="@machineItem.Key.ScreenDumpUrl" target="_blank" style="@(string.IsNullOrEmpty(machineItem.Key.ScreenDumpUrl) ? "display: none" : "")">Show picture</a></td>
+        </tr>
+    }
+</table>
+
+
+@section scripts {
+
+
+	<script>
+		$(document).ready(function() {
+
+			$("input[id^='chk_']").change(function() {
+				var checkBox = jQuery(this);
+				var machineId = checkBox.attr("id").substr(4);
+				var value = checkBox.prop("checked");
+
+                // Set subscription through Ajax call
+				$.ajax({
+					url: "/Subscribe/SetSubscription?machineId=" + machineId + "&isSubscribed=" + value,
+					success: function(data) {
+					}
+				});
+
+                // Alternative way: Set subscription through websocket
+				//$.connection.notificationHub.server.setSubscription(machineId, value);
+			});
+
+			$.connection.notificationHub.client.addScreenDumpNotification = function (machineId, screenDumpUrl, display) {
+				var link = $("#lnk_" + machineId);
+				link.attr("href", screenDumpUrl);
+				link.html(display);
+				link.show();
+			};
+
+		});
+
+	</script>
+}

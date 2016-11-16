@@ -1,0 +1,146 @@
+﻿@{ Layout = null; }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/toastr.css" />
+    <link rel="stylesheet" href="~/Content/Site.css"/>
+    <style>
+        #btnTest, #btnClose {
+            width: 200px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><div id="divStatus"></div></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<div class="container-fluid">
+    <h1>Websocket-sharp</h1>
+    <p>An alternative approach for WebSocket setup using Nuget lib websocket-sharp on server side and plain Javascript WebSocket on client side.</p>
+    <button id="btnTest">Request Notifications</button>
+    <button id="btnClose">Force websocket Close</button>
+    <footer>
+        <hr/>
+        <p>Websocket Demo by &copy; Jakob Lithner, Softhouse 2016</p>
+    </footer>
+</div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/app.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+        
+            var webSocket;
+
+            // 1) Setup WebSocket connection
+            function initiateWebsocket() {
+                if (!webSocket || webSocket.readyState === undefined || webSocket.readyState > 1) {
+                    displaySocketState("Connecting ...");
+                    webSocket = new WebSocket("ws://localhost:4969/DemoSocket");
+
+                    webSocket.onopen = function (e) {
+                        displaySocketState();
+                    };
+                    webSocket.onclose = function (e) {
+                        displaySocketState();
+                        setTimeout(function () { initiateWebsocket(); }, 5000);
+                    };
+                    webSocket.onmessage = function (e) {
+                        receiveMessage(e);
+                    };
+                }
+            }
+
+            // 2) Receive message to client
+            function receiveMessage(e) {
+                if (e.data instanceof ArrayBuffer) {
+                    console.debug("ArrayBuffer");
+
+                } else if (e.data instanceof Blob) {
+                    console.debug("Blob");
+
+                } else if (typeof e.data === "string") {
+                    var eventMessage = JSON.parse(e.data);
+                    if (eventMessage) {
+                        switch (eventMessage.Type) {
+                            case "Notification":
+                                var notification = eventMessage.Payload;
+                                displayNotification(notification.Message, notification.Header, notification.MessageType);
+                                break;
+                            default:
+                                console.warn("Incoming EventMessage with Type=" + eventMessage.Type + " was not handled");
+                                break;
+                        }
+                    } else {
+                        console.warn("Unhandled message: " + e.data);
+                    }
+                }
+            }
+
+            // 3) Send message to server
+            function sendMessage(type, payload) {
+                var eventMessage = { Type: type, Payload: payload };
+                var json = JSON.stringify(eventMessage);
+                webSocket.send(json);
+            }
+
+
+
+            function displaySocketState(state) {
+                if (!state && webSocket && webSocket.readyState) {
+                    switch (webSocket.readyState) {
+                        case WebSocket.CONNECTING:
+                            state = "Connecting";
+                            break;
+                        case WebSocket.OPEN:
+                            state = "Open";
+                            break;
+                        case WebSocket.CLOSING:
+                            state = "Closing";
+                            break;
+                        default:
+                            state = "Closed";
+                            break;
+                    }
+                }
+                console.debug("WebSocket " + state);
+            }
+
+            $("#btnTest").click(function () {
+                sendMessage("DummyNotification", "");
+            });
+
+            $("#btnClose").click(function () {
+                webSocket.close();
+            });
+
+            initiateWebsocket();
+
+
+        });
+    </script>
+</body>
+</html>

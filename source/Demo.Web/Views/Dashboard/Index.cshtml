@@ -1,0 +1,57 @@
+﻿@model Demo.Web.Models.MachinesModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@section head {
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+    <script type="text/javascript" src="/Scripts/gauge.js"></script>
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<div>
+    <span id="memoryGaugeContainer"></span>
+    <span id="cpuGaugeContainer"></span>
+    <span id="networkGaugeContainer"></span>
+    <span id="tempGaugeContainer"></span>
+</div>
+
+
+
+@section scripts {
+
+    <script>
+        var gauges = [];
+
+        function createGauge(name, label, unit, min, max) {
+            var config = { size: 200, label: label, min: undefined != min ? min : 0, max: undefined != max ? max : 100, minorTicks: 5, unit: unit }
+
+            var range = config.max - config.min;
+            config.yellowZones = [{ from: config.min + range * 0.75, to: config.min + range * 0.9 }];
+            config.redZones = [{ from: config.min + range * 0.9, to: config.max }];
+
+            gauges[name] = new Gauge(name + "GaugeContainer", config);
+            gauges[name].render();
+        }
+
+
+        $(document).ready(function () {
+
+            // Define gauges
+            createGauge("memory", "Memory", "Mb", 0, 16);
+            createGauge("cpu", "CPU", "%", 0, 100);
+            createGauge("network", "Network", "kb", 0, 300);
+            createGauge("temp", "Temperature", "C", -20, 50);
+
+
+            // Receive values
+            $.connection.notificationHub.client.setSensorValue = function (key, value) {
+                gauges[key].redraw(value);
+            };
+
+        });
+
+    </script>
+}

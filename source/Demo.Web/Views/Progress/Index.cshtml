@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Progress";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+<p>Execute long jobs on server and receive asynchronous feedback to client</p>
+<button id="btnExecute">Execute</button>
+
+<div class="progress">
+    <div class="progress-bar" style="width: 0;"></div>
+</div>
+<div class="text-info"></div>
+
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function () {
+
+            var btnExecute = $("#btnExecute");
+            var progressBar = $(".progress-bar");
+            var divInfo = $(".text-info");
+
+            window.hubConnector.done(function () {
+
+                btnExecute.click(function () {
+                    btnExecute.prop("disabled", true);
+                    progressBar.removeClass("progress-bar-success");
+                    progressBar.width("0%");
+                    progressBar.text("");
+                    divInfo.text("Started");
+
+                    $.connection.notificationHub.server.doLongRunningThing()
+                                          .progress(function (progressItem) {
+                                              progressBar.width(progressItem.Percent + "%");
+                                              progressBar.text(progressItem.Percent + "%");
+                                              divInfo.text(progressItem.Message);
+                                          })
+                                          .done(function (result) {
+                                              btnExecute.prop("disabled", false);
+                                              progressBar.addClass("progress-bar-success");
+                                              divInfo.text(result);
+                                          });
+                });
+
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,65 @@
+﻿@model Demo.Web.Models.MachinesModel
+@{
+    ViewData["Title"] = "Map";
+}
+
+@section head {
+    <style>
+        .navbar {
+            margin-bottom: 0;
+        }
+
+        footer {
+            display: none;
+        }
+    </style>
+}
+
+
+<div id="map"></div>
+
+
+@section scripts {
+
+    <script>
+
+var map;
+var carMarkers = [];
+var startPosition = { lat: 57.704137, lng: 11.962232 };
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), { zoom: 17, center: startPosition });
+
+    createMarker("car", "C", "car16.png");
+    createMarker("truck", "T", "truck24.png");
+}
+
+function createMarker(key, label, imageName) {
+    carMarkers[key] = new google.maps.Marker({
+        position: startPosition,
+        map: map,
+        //label: label,
+        //icon: "/Content/images/" + imageName
+    });
+}
+
+        $(document).ready(function () {
+
+            // The Google map component needs the container AND all parent elements to be explicitly sized ...
+            $("#map").addClass("maxSize");
+            $("#map").parents().addClass("maxSize");
+
+            $.connection.notificationHub.client.setMapPosition = function (key, latitude, longitude, boxCount) {
+                carMarkers[key].setPosition(new google.maps.LatLng(latitude, longitude));
+                //carMarkers[key].set("label", boxCount.toString()); // Specify marker label (limited to 1 character only!)
+                //cars[key].panTo(new google.maps.LatLng(latitude, longitude)); // Center map around position
+            };
+
+        });
+
+    </script>
+
+<!-- TODO: Generate your own API key here: https://developers.google.com/maps/documentation/javascript/get-api-key -->
+<!-- The free plan will give you access to 25000 requests per day -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=YOUR_KEY_GOES_HERE"></script>
+}
